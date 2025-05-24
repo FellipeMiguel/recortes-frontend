@@ -24,7 +24,7 @@ async function fetchCuts(
     return { data: [], meta: defaultMeta };
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const effectivePage = Math.max(1, currentPage);
   const effectiveLimit = Math.max(1, limit);
 

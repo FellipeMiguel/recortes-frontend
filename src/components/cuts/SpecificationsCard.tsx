@@ -74,8 +74,10 @@ export function SpecificationsCard({
           {...register("body.cutType")}
         >
           <option value="">Selecionar...</option>
-          <option value="Americano">Americano</option>
-          <option value="Europeu">Trucker</option>
+          <option value="aba">aba</option>
+          <option value="copa">copa</option>
+          <option value="lateral">lateral</option>
+          <option value="frente">frente</option>
         </SelectField>
         <SelectField
           label="Posição da imagem"
@@ -83,9 +85,9 @@ export function SpecificationsCard({
           {...register("body.position")}
         >
           <option value="">Selecionar...</option>
-          <option value="Costas">Aba</option>
           <option value="Frente">Frente</option>
-          <option value="Costas">Lateral</option>
+          <option value="Lateral">Lateral</option>
+          <option value="Traseira">Traseira</option>
         </SelectField>
         <SelectField
           label="Tipo de produto"
@@ -93,8 +95,8 @@ export function SpecificationsCard({
           {...register("body.productType")}
         >
           <option value="">Selecionar...</option>
-          <option value="Boné">Boné</option>
-          <option value="Viseira">Viseira</option>
+          <option value="boné americano">boné americano</option>
+          <option value="boné trucker">boné trucker</option>
         </SelectField>
         <SelectField
           label="Material"
@@ -102,9 +104,8 @@ export function SpecificationsCard({
           {...register("body.material")}
         >
           <option value="">Selecionar...</option>
-          <option value="Algodão">Algodão</option>
-          <option value="Linho">Linho</option>
-          <option value="Poliéster">Poliéster</option>
+          <option value="algodão">algodão</option>
+          <option value="linho">linho</option>
         </SelectField>
         <InputField
           label="Cor do material"
