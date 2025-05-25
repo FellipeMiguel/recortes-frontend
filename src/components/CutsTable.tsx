@@ -101,6 +101,10 @@ export function CutsTable({
     }
   }
 
+  const handleRowClick = (cutId: number) => {
+    router.push(`/dashboard/cuts/edit/${cutId}`);
+  };
+
   return (
     <>
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
@@ -108,9 +112,9 @@ export function CutsTable({
           <div className="flex items-center gap-6 text-sm text-gray-500">
             <button className="pb-2">Todos ({totalBackendItems})</button>
             <button className="pb-2 border-b-2 border-[#5A00B4] text-[#5A00B4] font-semibold">
-              Ativos ({originalCuts.filter((c) => c.status === "ATIVO").length}){" "}
+              Ativos ({originalCuts.filter((c) => c.status === "ATIVO").length})
             </button>
-            <button className="pb-2">Expirado (N/A)</button>{" "}
+            <button className="pb-2">Expirado (N/A)</button>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -131,6 +135,7 @@ export function CutsTable({
             />
           </div>
         </div>
+
         {displayedCuts.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -155,7 +160,11 @@ export function CutsTable({
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {displayedCuts.map((cut) => (
-                  <tr key={cut.id}>
+                  <tr
+                    key={cut.id}
+                    onClick={() => handleRowClick(cut.id)}
+                    className="hover:bg-gray-50 cursor-pointer"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {cut.modelName}
                     </td>
@@ -183,6 +192,7 @@ export function CutsTable({
           </div>
         )}
       </div>
+
       {totalPages >= 1 && (
         <div className="flex justify-center items-center mt-6">
           <nav className="flex items-center gap-2" aria-label="Pagination">
@@ -198,7 +208,6 @@ export function CutsTable({
             >
               &lt;
             </Link>
-
             {pageNumbers.map((pageNumber) => (
               <Link
                 key={pageNumber}
@@ -215,7 +224,6 @@ export function CutsTable({
                 {pageNumber}
               </Link>
             ))}
-
             <Link
               href={`/dashboard?${new URLSearchParams({
                 ...Object.fromEntries(searchParamsHook),

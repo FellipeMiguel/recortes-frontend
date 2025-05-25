@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { UseFormRegister, FieldErrors, FieldError } from "react-hook-form";
-import { CreateCutForm } from "@/app/dashboard/cuts/new/page";
+import { UpdateCutForm } from "@/app/dashboard/cuts/edit/[id]/page";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -27,13 +27,15 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
 InputField.displayName = "InputField";
 
 interface ProductDataCardProps {
-  register: UseFormRegister<CreateCutForm>;
-  errors?: FieldErrors<CreateCutForm["body"]>;
+  register: UseFormRegister<UpdateCutForm>;
+  errors?: FieldErrors<UpdateCutForm["body"]>;
+  generatedKey: string;
 }
 
 export function ProductDataCard({
   register,
   errors = {},
+  generatedKey,
 }: ProductDataCardProps) {
   return (
     <div className="space-y-6">
@@ -46,7 +48,8 @@ export function ProductDataCard({
         <input
           type="text"
           readOnly
-          value="a-ser-gerado-automaticamente"
+          value={generatedKey}
+          placeholder="Chave gerada a partir da imagem salva"
           className="w-full p-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-500"
         />
       </div>
