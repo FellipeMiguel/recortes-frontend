@@ -3,45 +3,15 @@
 import React, { useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilterDropdown } from "./FilterDropdown";
-import { Cut, CutsApiResponseMeta, RecorteStatus } from "@/types";
+import { StatusPill } from "@/components/ui/StatusPill";
+import { Cut, CutsApiResponseMeta } from "@/types";
 import Link from "next/link";
-import { Search } from "lucide-react";
-
+import Image from "next/image";
 interface CutsTableProps {
   cuts: Cut[];
   paginationMeta: CutsApiResponseMeta;
   currentSortBy?: string;
 }
-
-const StatusPill = ({ status }: { status: RecorteStatus }) => {
-  switch (status) {
-    case "ATIVO":
-      return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#EAF7ED] text-[#2F843F]">
-          Ativo
-        </span>
-      );
-    case "EXPIRADO":
-      return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-          Expirado
-        </span>
-      );
-    case "PENDENTE":
-      return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-          Pendente
-        </span>
-      );
-    default:
-      const exhaustiveCheck: never = status;
-      return (
-        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-          {exhaustiveCheck || String(status)}
-        </span>
-      );
-  }
-};
 
 export function CutsTable({
   cuts: originalCuts,
@@ -72,6 +42,11 @@ export function CutsTable({
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault();
+    console.log("Busca (Dashboard) acionada com termo:", searchTerm);
   };
 
   const handleSortChange = (sortByValue?: string) => {
@@ -114,21 +89,29 @@ export function CutsTable({
             <button className="pb-2 border-b-2 border-[#5A00B4] text-[#5A00B4] font-semibold">
               Ativos ({originalCuts.filter((c) => c.status === "ATIVO").length})
             </button>
-            <button className="pb-2">Expirado (N/A)</button>
+            <button className="pb-2">Expirado (0)</button>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="relative">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative flex-grow sm:flex-grow-0"
+            >
               <input
                 type="text"
-                placeholder="Pesquisar nesta página..."
+                placeholder="Pesquisar..."
                 value={searchTerm}
                 onChange={handleSearchInputChange}
-                className="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A00B4]"
+                className="w-full sm:w-64 h-10 pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-            </div>
+              <button
+                type="submit"
+                title="Pesquisar"
+                className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-10 bg-black text-white rounded-r-lg hover:bg-gray-800 transition-colors"
+              >
+                <Image src="/lupa.svg" alt="Pesquisar" width={18} height={18} />
+              </button>
+            </form>
+
             <FilterDropdown
               currentSortBy={currentSortBy}
               onSortChange={handleSortChange}

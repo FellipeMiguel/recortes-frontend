@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Control, Controller } from "react-hook-form";
-import { UpdateCutForm } from "@/app/dashboard/cuts/edit/[id]/page";
+import { UpdateCutForm } from "@/app/(main)/dashboard/cuts/edit/[id]/page";
 import { useState } from "react";
 
 interface EditCutPageHeaderProps {

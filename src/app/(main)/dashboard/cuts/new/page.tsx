@@ -3,7 +3,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -12,6 +12,7 @@ import { SpecificationsCard } from "@/components/cuts/SpecificationsCard";
 import { MediaCard } from "@/components/cuts/MediaCard";
 import { ProductDataCard } from "@/components/cuts/ProductDataCard";
 import { UnsavedChangesBar } from "@/components/cuts/UnsavedChangesBar";
+import { sanitize } from "@/utils/stringUtils";
 
 const createCutSchema = z.object({
   body: z.object({
@@ -78,6 +79,33 @@ export default function NewCutPage() {
   });
 
   const watchedStatus = watch("body.status");
+  const watchedModelName = watch("body.modelName");
+  const watchedCutType = watch("body.cutType");
+  const watchedMaterial = watch("body.material");
+  const watchedMaterialColor = watch("body.materialColor");
+
+  const generatedKeyString = useMemo(() => {
+    const parts = [
+      sanitize(watchedModelName),
+      sanitize(watchedCutType),
+      sanitize(watchedMaterial),
+      sanitize(watchedMaterialColor),
+    ].filter((part) => part && part.length > 0);
+
+    if (
+      parts.length === 0 &&
+      (watchedModelName ||
+        watchedCutType ||
+        watchedMaterial ||
+        watchedMaterialColor)
+    ) {
+      return "Preenchendo...";
+    }
+    if (parts.length === 0) {
+      return "";
+    }
+    return parts.join("-");
+  }, [watchedModelName, watchedCutType, watchedMaterial, watchedMaterialColor]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -200,7 +228,11 @@ export default function NewCutPage() {
             />
           </div>
           <div className="lg:col-span-1 space-y-6">
-            <ProductDataCard register={register} errors={errors.body} />
+            <ProductDataCard
+              register={register}
+              errors={errors.body}
+              generatedKey={generatedKeyString}
+            />
           </div>
         </div>
       </div>

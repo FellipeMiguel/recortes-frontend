@@ -82,7 +82,7 @@ export default function EditCutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [originalCutData, setOriginalCutData] = useState<Cut | null>(null);
-  const [generatedKeyString, setGeneratedKeyString] = useState<string>(""); // Estado para a chave extraída
+  const [generatedKeyString, setGeneratedKeyString] = useState<string>("");
 
   const {
     register,

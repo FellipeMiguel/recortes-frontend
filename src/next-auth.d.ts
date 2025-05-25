@@ -1,4 +1,3 @@
-// src/next-auth.d.ts
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 import { JWT as NextAuthJWT, DefaultJWT } from "next-auth/jwt";
 

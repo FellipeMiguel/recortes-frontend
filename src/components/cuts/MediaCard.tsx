@@ -2,7 +2,7 @@
 
 import { UploadCloud } from "lucide-react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { CreateCutForm } from "@/app/dashboard/cuts/new/page";
+import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page";
 
 interface MediaCardProps {
   register: UseFormRegister<CreateCutForm>;

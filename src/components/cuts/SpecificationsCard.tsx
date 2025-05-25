@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { UseFormRegister, FieldErrors, FieldError } from "react-hook-form";
-import { CreateCutForm } from "@/app/dashboard/cuts/new/page";
+import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;

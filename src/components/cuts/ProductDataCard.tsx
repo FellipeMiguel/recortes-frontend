@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { UseFormRegister, FieldErrors, FieldError } from "react-hook-form";
-import { UpdateCutForm } from "@/app/dashboard/cuts/edit/[id]/page";
+import { UpdateCutForm } from "@/app/(main)/dashboard/cuts/edit/[id]/page";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -29,7 +29,7 @@ InputField.displayName = "InputField";
 interface ProductDataCardProps {
   register: UseFormRegister<UpdateCutForm>;
   errors?: FieldErrors<UpdateCutForm["body"]>;
-  generatedKey: string;
+  generatedKey?: string;
 }
 
 export function ProductDataCard({
