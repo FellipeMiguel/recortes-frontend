@@ -6,8 +6,8 @@ import Image from "next/image";
 import { Cut, CutsApiResponseMeta } from "@/types";
 import Link from "next/link";
 import { extractKeyFromImageUrl } from "@/utils/stringUtils";
-import { FilterDropdown } from "../FilterDropdown";
-import { StatusPill } from "@/components/ui/StatusPill";
+import { FilterDropdown } from "../FilterDropdown"; // Ajuste o caminho se necessário
+import { StatusPill } from "@/components/ui/StatusPill"; // Ajuste o caminho se necessário
 
 interface VisualizationTableProps {
   cuts: Cut[];
@@ -37,11 +37,21 @@ export function VisualizationTable({
       return originalCuts;
     }
     const lowerSearchTerm = searchTerm.toLowerCase();
-    return originalCuts.filter(
-      (cut) =>
-        cut.modelName.toLowerCase().includes(lowerSearchTerm) ||
-        cut.sku.toLowerCase().includes(lowerSearchTerm)
-    );
+    return originalCuts.filter((cut) => {
+      const modelNameString = cut.modelName || "";
+      const skuString = cut.sku || "";
+      const imageDerivedKeyString = extractKeyFromImageUrl(cut.imageUrl) || "";
+
+      const modelNameMatch = modelNameString
+        .toLowerCase()
+        .includes(lowerSearchTerm);
+      const skuMatch = skuString.toLowerCase().includes(lowerSearchTerm);
+      const imageKeyMatch = imageDerivedKeyString
+        .toLowerCase()
+        .includes(lowerSearchTerm);
+
+      return modelNameMatch || skuMatch || imageKeyMatch;
+    });
   }, [originalCuts, searchTerm]);
 
   const handleSelectCut = (cutId: number) => {
@@ -86,9 +96,8 @@ export function VisualizationTable({
       return;
     }
     console.log("IDs selecionados para gerar imagem:", Array.from(selectedIds));
-    alert(
-      `Próxima etapa: Ir para página de montagem com ${selectedIds.size} peça(s) selecionada(s).`
-    );
+    const idsQueryParam = Array.from(selectedIds).join(",");
+    router.push(`/visualization/assembly?ids=${idsQueryParam}`);
   };
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,12 +112,12 @@ export function VisualizationTable({
       params.delete("sortBy");
     }
     params.set("page", "1");
-    router.push(`/visualizacao?${params.toString()}`);
+    router.push(`/visualization?${params.toString()}`);
   };
 
   if (originalCuts === undefined || originalCuts === null) {
     return (
-      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm text-center text-gray-500">
+      <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm text-center text-gray-500">
         Carregando...
       </div>
     );
@@ -116,7 +125,7 @@ export function VisualizationTable({
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Termo de busca submetido (frontend):", searchTerm);
+    console.log("Termo de busca submetido", searchTerm);
   };
 
   const buildPageLinkParams = (pageNumber: number) => {
@@ -127,35 +136,38 @@ export function VisualizationTable({
 
   return (
     <>
-      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div className="flex items-center gap-x-6 text-sm text-gray-500 border-b sm:border-b-0 pb-3 sm:pb-0">
-            <button className="py-2 text-gray-700 hover:text-purple-600">
+          <div className="flex items-center gap-x-4 sm:gap-x-6 text-sm text-gray-500 border-b sm:border-b-0 pb-3 sm:pb-0 w-full sm:w-auto overflow-x-auto">
+            <button className="py-2 text-gray-700 hover:text-purple-600 flex-shrink-0">
               Todos ({searchTerm ? displayedCuts.length : totalBackendItems})
             </button>
-            <button className="py-2 border-b-2 border-purple-600 text-purple-600 font-semibold">
+            <button className="py-2 border-b-2 border-purple-600 text-purple-600 font-semibold flex-shrink-0">
               Ativos ({displayedCuts.filter((c) => c.status === "ATIVO").length}
               )
             </button>
-            <button className="py-2 text-gray-700 hover:text-purple-600">
+            <button className="py-2 text-gray-700 hover:text-purple-600 flex-shrink-0">
               Expirado (0)
             </button>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <form onSubmit={handleSearchSubmit} className="flex items-center">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex items-center flex-grow sm:flex-grow-0"
+            >
               <input
                 type="text"
                 placeholder="Pesquisar..."
                 value={searchTerm}
                 onChange={handleSearchInputChange}
-                className="w-full sm:w-56 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none h-10"
+                className="w-full h-10 px-3 pr-10 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
               <button
                 type="submit"
                 title="Pesquisar"
                 className="bg-black text-white p-0 w-10 h-10 flex items-center justify-center rounded-r-lg hover:bg-gray-800 transition-colors"
               >
-                <Image src="/lupa.svg" alt="Pesquisar" width={20} height={20} />
+                <Image src="/lupa.svg" alt="Pesquisar" width={18} height={18} />
               </button>
             </form>
 
@@ -171,17 +183,17 @@ export function VisualizationTable({
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left w-12"></th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left w-12"></th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Key
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tipo
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Ordem
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
                 </tr>
@@ -189,7 +201,7 @@ export function VisualizationTable({
               <tbody className="bg-white divide-y divide-gray-200">
                 {displayedCuts.map((cut) => (
                   <tr key={cut.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <input
                         type="checkbox"
                         className="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-offset-0 focus:ring-purple-200 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -201,16 +213,16 @@ export function VisualizationTable({
                         }
                       />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-3 sm:px-6 py-4 text-sm font-medium text-gray-900 max-w-[120px] sm:max-w-xs break-words">
                       {extractKeyFromImageUrl(cut.imageUrl)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {cut.productType}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="hidden md:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {cut.displayOrder}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm">
                       <StatusPill status={cut.status} />
                     </td>
                   </tr>
@@ -233,7 +245,7 @@ export function VisualizationTable({
         (totalPages > 1 && totalBackendItems > 0) ? (
           <nav className="flex items-center gap-2" aria-label="Pagination">
             <Link
-              href={`/visualizacao?${buildPageLinkParams(currentPage - 1)}`}
+              href={`/visualization?${buildPageLinkParams(currentPage - 1)}`}
               className={`px-3 py-2 text-sm rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 ${
                 currentPage === 1 ? "pointer-events-none opacity-50" : ""
               }`}
@@ -244,7 +256,7 @@ export function VisualizationTable({
             {pageNumbers.map((pageNumber) => (
               <Link
                 key={pageNumber}
-                href={`/visualizacao?${buildPageLinkParams(pageNumber)}`}
+                href={`/visualization?${buildPageLinkParams(pageNumber)}`}
                 className={`px-3 py-2 text-sm rounded-md border hover:bg-gray-50 ${
                   currentPage === pageNumber
                     ? "text-white bg-black border-black font-bold"
@@ -255,7 +267,7 @@ export function VisualizationTable({
               </Link>
             ))}
             <Link
-              href={`/visualizacao?${buildPageLinkParams(currentPage + 1)}`}
+              href={`/visualization?${buildPageLinkParams(currentPage + 1)}`}
               className={`px-3 py-2 text-sm rounded-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 ${
                 currentPage === totalPages || totalPages === 0
                   ? "pointer-events-none opacity-50"
@@ -267,7 +279,7 @@ export function VisualizationTable({
             </Link>
           </nav>
         ) : (
-          <div className="h-[38px]" />
+          <div className="h-[42px]" />
         )}
         <div
           className={

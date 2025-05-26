@@ -107,11 +107,16 @@ export function SpecificationsCard({
           <option value="algodão">algodão</option>
           <option value="linho">linho</option>
         </SelectField>
-        <InputField
+        <SelectField
           label="Cor do material"
           error={errors.materialColor}
           {...register("body.materialColor")}
-        />
+        >
+          <option value="">Selecionar...</option>
+          <option value="azul-marinho">Azul marinho</option>
+          <option value="laranja">Laranja</option>
+        </SelectField>
+
         <InputField
           label="Ordem de exibição"
           type="number"
