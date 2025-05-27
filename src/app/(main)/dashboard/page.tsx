@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
@@ -5,13 +7,13 @@ import { CutsTable } from "@/components/CutsTable";
 import Link from "next/link";
 import { CutsApiResponse, CutsApiResponseMeta } from "@/types";
 
-export const dynamic = "force-dynamic";
-
 async function fetchCuts(
   idToken: string | undefined,
   currentPage: number,
   limit: number = 10,
-  sortBy?: string
+  sortBy?: string,
+  cutType?: string,
+  material?: string
 ): Promise<CutsApiResponse> {
   const defaultMeta: CutsApiResponseMeta = {
     page: currentPage,
@@ -24,7 +26,7 @@ async function fetchCuts(
     return { data: [], meta: defaultMeta };
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   const effectivePage = Math.max(1, currentPage);
   const effectiveLimit = Math.max(1, limit);
 
@@ -34,8 +36,11 @@ async function fetchCuts(
   });
 
   if (sortBy) queryParams.append("sortBy", sortBy);
+  if (cutType) queryParams.append("cutType", cutType);
+  if (material) queryParams.append("material", material);
 
   const url = `${apiUrl}/cuts?${queryParams.toString()}`;
+
   try {
     const response = await fetch(url, {
       headers: { Authorization: `Bearer ${idToken}` },
@@ -46,8 +51,11 @@ async function fetchCuts(
       console.error(
         `Erro ao buscar recortes: ${response.status} ${response.statusText}`
       );
+      const errorBody = await response.text();
+      console.error("Corpo do erro:", errorBody);
       return { data: [], meta: { ...defaultMeta, page: effectivePage } };
     }
+
     const result: CutsApiResponse = await response.json();
     return {
       data: result.data || [],
@@ -58,13 +66,8 @@ async function fetchCuts(
     return { data: [], meta: { ...defaultMeta, page: effectivePage } };
   }
 }
-
 interface DashboardPageProps {
-  searchParams: {
-    page?: string;
-    limit?: string;
-    sortBy?: string;
-  };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function DashboardPage({
@@ -79,12 +82,25 @@ export default async function DashboardPage({
 
   const idToken = session.user.idToken;
 
-  const pageQuery = searchParams.page;
-  const limitQuery = searchParams.limit;
-  const sortByQuery = searchParams.sortBy;
+  const pageQuery = searchParams?.page;
+  const limitQuery = searchParams?.limit;
+  const sortByQuery = searchParams?.sortBy;
+  const cutTypeFilter = searchParams?.cutType;
+  const materialFilter = searchParams?.material;
 
-  const currentPage = pageQuery ? Number(pageQuery) : 1;
-  const limit = limitQuery ? Number(limitQuery) : 10;
+  const currentPage =
+    Number(Array.isArray(pageQuery) ? pageQuery[0] : pageQuery) || 1;
+  const limit =
+    Number(Array.isArray(limitQuery) ? limitQuery[0] : limitQuery) || 10;
+  const currentSortBy = Array.isArray(sortByQuery)
+    ? sortByQuery[0]
+    : sortByQuery;
+  const currentCutType = Array.isArray(cutTypeFilter)
+    ? cutTypeFilter[0]
+    : cutTypeFilter;
+  const currentMaterial = Array.isArray(materialFilter)
+    ? materialFilter[0]
+    : materialFilter;
 
   const validCurrentPage = Math.max(1, currentPage);
   const validLimit = Math.max(1, limit);
@@ -93,7 +109,9 @@ export default async function DashboardPage({
     idToken,
     validCurrentPage,
     validLimit,
-    sortByQuery
+    currentSortBy,
+    currentCutType,
+    currentMaterial
   );
 
   return (
@@ -109,7 +127,7 @@ export default async function DashboardPage({
       <CutsTable
         cuts={cutsResponse.data}
         paginationMeta={cutsResponse.meta}
-        currentSortBy={sortByQuery}
+        currentSortBy={currentSortBy}
       />
     </>
   );

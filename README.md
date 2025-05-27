@@ -64,7 +64,7 @@ Este é o frontend para o Sistema de Criação de Modelos com Montagem de Imagen
 
 ## Tecnologias Utilizadas
 
-- **Next.js 14+** (App Router)
+- **Next.js 15**
 - **React 18+**
 - **TypeScript**
 - **Tailwind CSS** (para estilização)
