@@ -80,7 +80,7 @@ export default async function VisualizationPage({
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session || !session.user) {
-    redirect("/login");
+    redirect("/");
     return null;
   }
 
