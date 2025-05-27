@@ -66,13 +66,12 @@ async function fetchCuts(
     return { data: [], meta: { ...defaultMeta, page: effectivePage } };
   }
 }
-interface DashboardPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
 
 export default async function DashboardPage({
   searchParams,
-}: DashboardPageProps) {
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session || !session.user) {
