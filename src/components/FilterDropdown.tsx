@@ -49,6 +49,7 @@ export function FilterDropdown({
         className="p-3 flex items-center"
         aria-haspopup="true"
         aria-expanded={isOpen}
+        aria-label="Abrir menu de ordenação"
       >
         <Image
           src="/ion_filter.svg"

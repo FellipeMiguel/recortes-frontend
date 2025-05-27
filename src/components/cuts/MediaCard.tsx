@@ -4,7 +4,7 @@ import { UploadCloud } from "lucide-react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page";
 
-interface MediaCardProps {
+export interface MediaCardProps {
   register: UseFormRegister<CreateCutForm>;
   errors: FieldErrors<CreateCutForm>;
   imagePreview: string | null;
@@ -50,6 +50,7 @@ export function MediaCard({
               id="image-upload"
               type="file"
               className="hidden"
+              data-testid="image-upload-input"
               {...register("file", { onChange: onImageChange })}
             />
           </label>

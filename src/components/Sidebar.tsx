@@ -23,6 +23,7 @@ export const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
     <>
       {isMobileOpen && (
         <div
+          data-testid="sidebar-backdrop"
           className="fixed inset-0 z-30 bg-black/30 lg:hidden"
           onClick={onCloseMobile}
           aria-hidden="true"

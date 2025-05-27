@@ -1,21 +1,28 @@
+// src/components/cuts/SpecificationsCard.tsx
 "use client";
 
 import { forwardRef } from "react";
 import { UseFormRegister, FieldErrors, FieldError } from "react-hook-form";
-import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page";
+import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page"; // Ajuste o caminho se necessário
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: FieldError;
+  name: string; // Alterado para string, pois register("body.modelName") passa "body.modelName"
 }
 
 const InputField = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, ...props }, ref) => (
+  ({ label, error, name, ...props }, ref) => (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        htmlFor={name}
+        className="block text-sm font-medium text-gray-700 mb-1"
+      >
         {label}
       </label>
       <input
+        id={name}
+        name={name}
         {...props}
         ref={ref}
         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -29,15 +36,21 @@ InputField.displayName = "InputField";
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   error?: FieldError;
+  name: string; // Alterado para string
 }
 
 const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, children, ...props }, ref) => (
+  ({ label, error, children, name, ...props }, ref) => (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        htmlFor={name}
+        className="block text-sm font-medium text-gray-700 mb-1"
+      >
         {label}
       </label>
       <select
+        id={name}
+        name={name}
         {...props}
         ref={ref}
         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -50,7 +63,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
 );
 SelectField.displayName = "SelectField";
 
-interface SpecificationsCardProps {
+export interface SpecificationsCardProps {
   register: UseFormRegister<CreateCutForm>;
   errors?: FieldErrors<CreateCutForm["body"]>;
 }
@@ -63,6 +76,7 @@ export function SpecificationsCard({
     <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
       <h2 className="text-lg font-semibold mb-4">Especificações</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* O spread de register("body.modelName") passa name="body.modelName" */}
         <InputField
           label="Nome do modelo"
           error={errors.modelName}
@@ -116,7 +130,6 @@ export function SpecificationsCard({
           <option value="azul-marinho">Azul marinho</option>
           <option value="laranja">Laranja</option>
         </SelectField>
-
         <InputField
           label="Ordem de exibição"
           type="number"

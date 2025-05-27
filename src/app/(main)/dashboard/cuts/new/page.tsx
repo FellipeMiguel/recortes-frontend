@@ -229,7 +229,9 @@ export default function NewCutPage() {
           </div>
           <div className="lg:col-span-1 space-y-6">
             <ProductDataCard
-              register={register}
+              register={
+                register as unknown as import("@/components/cuts/ProductDataCard").ProductDataCardProps["register"]
+              }
               errors={errors.body}
               generatedKey={generatedKeyString}
             />
