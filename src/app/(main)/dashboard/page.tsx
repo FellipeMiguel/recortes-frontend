@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "../../../lib/auth";
 import { redirect } from "next/navigation";
 import { CutsTable } from "@/components/CutsTable";
 import Link from "next/link";
