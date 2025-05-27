@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import LoginPage from "./page";
+import LoginPage from "../page";
 import { signIn } from "next-auth/react";
 
 jest.mock("next/image", () => ({
