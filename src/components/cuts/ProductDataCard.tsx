@@ -6,8 +6,10 @@ import {
   FieldErrors,
   FieldError,
   FieldValues,
+  Path,
 } from "react-hook-form";
-interface ProductCardFormValues extends FieldValues {
+
+interface BaseFormValues extends FieldValues {
   body: {
     sku?: string;
   };
@@ -40,22 +42,28 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
 );
 InputField.displayName = "InputField";
 
-export interface ProductDataCardProps {
-  register: UseFormRegister<ProductCardFormValues>;
-  errors?: FieldErrors<ProductCardFormValues["body"]>;
+export interface ProductDataCardProps<TFormValues extends BaseFormValues> {
+  register: UseFormRegister<TFormValues>;
+  errors?: FieldErrors<TFormValues["body"]>;
   generatedKey?: string;
 }
 
-export function ProductDataCard({
+export function ProductDataCard<TFormValues extends BaseFormValues>({
   register,
   errors = {},
   generatedKey,
-}: ProductDataCardProps) {
+}: ProductDataCardProps<TFormValues>) {
+  const skuError = errors?.sku as FieldError | undefined;
+
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Dados do produto</h2>
-        <InputField label="SKU" error={errors?.sku} {...register("body.sku")} />
+        <InputField
+          label="SKU"
+          error={skuError}
+          {...register("body.sku" as Path<TFormValues>)}
+        />
       </div>
       <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Chave key gerada</h2>

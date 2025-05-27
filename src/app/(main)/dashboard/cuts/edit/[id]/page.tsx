@@ -13,6 +13,7 @@ import { MediaCard } from "@/components/cuts/MediaCard";
 import { ProductDataCard } from "@/components/cuts/ProductDataCard";
 import { UnsavedChangesBar } from "@/components/cuts/UnsavedChangesBar";
 import { Cut } from "@/types";
+import { extractKeyFromImageUrl } from "@/utils/stringUtils";
 
 const updateCutSchema = z.object({
   body: z.object({
@@ -46,31 +47,6 @@ const defaultFormValues: UpdateCutForm = {
   },
   file: null,
 };
-
-function extractKeyFromImageUrl(imageUrl: string | undefined | null): string {
-  if (!imageUrl) return "Chave não disponível";
-  try {
-    const url = new URL(imageUrl);
-    const pathParts = url.pathname.split("/");
-    const fileNameWithExtension = pathParts[pathParts.length - 1];
-    const key =
-      fileNameWithExtension.substring(
-        0,
-        fileNameWithExtension.lastIndexOf(".")
-      ) || fileNameWithExtension;
-    return key;
-  } catch (e) {
-    console.error("Erro ao parsear imageUrl:", e);
-
-    const parts = imageUrl.split("/");
-    const lastPart = parts[parts.length - 1];
-    return (
-      lastPart.substring(0, lastPart.lastIndexOf(".")) ||
-      lastPart ||
-      "Formato de URL inválido"
-    );
-  }
-}
 
 export default function EditCutPage() {
   const { data: session } = useSession();
