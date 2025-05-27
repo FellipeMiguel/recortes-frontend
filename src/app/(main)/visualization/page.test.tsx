@@ -1,4 +1,3 @@
-// src/app/(main)/visualization/page.test.tsx
 "use client";
 
 import { render, waitFor } from "@testing-library/react";
@@ -6,16 +5,12 @@ import "@testing-library/jest-dom";
 import { Session } from "next-auth";
 import { CutsApiResponse } from "@/types";
 
-// --- MOCKS ---
-
-// Mock para 'next-auth'. getServerSession é definido DENTRO da factory.
 jest.mock("next-auth", () => ({
   __esModule: true,
   default: jest.fn(() => ({})),
   getServerSession: jest.fn(),
 }));
 
-// Mock para 'next/navigation'. Funções são definidas DENTRO da factory.
 jest.mock("next/navigation", () => ({
   __esModule: true,
   redirect: jest.fn(),
@@ -27,10 +22,9 @@ jest.mock("next/navigation", () => ({
     replace: jest.fn(),
   })),
   useSearchParams: jest.fn(() => new URLSearchParams()),
-  usePathname: jest.fn(() => "/visualization"), // Pathname para esta página
+  usePathname: jest.fn(() => "/visualization"),
 }));
 
-// Mock para VisualizationTable
 jest.mock("@/components/cuts/VisualizationTable", () => ({
   __esModule: true,
   VisualizationTable: jest.fn(() => (
@@ -38,17 +32,14 @@ jest.mock("@/components/cuts/VisualizationTable", () => ({
   )),
 }));
 
-// Mock para o fetch global
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-// Importa o componente VisualizationPage e as funções mockadas DEPOIS de todos os mocks de módulo
 import VisualizationPage from "./page";
-import { getServerSession } from "next-auth"; // Importa a versão mockada
-import { redirect as nextRedirect } from "next/navigation"; // Importa redirect mockado
-import { VisualizationTable } from "@/components/cuts/VisualizationTable"; // Importa a versão mockada
+import { getServerSession } from "next-auth";
+import { redirect as nextRedirect } from "next/navigation";
+import { VisualizationTable } from "@/components/cuts/VisualizationTable";
 
-// Tipagem para os mocks para facilitar o uso nos testes
 const typedMockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession
 >;
@@ -108,7 +99,7 @@ describe("VisualizationPage Server Component", () => {
 
   it("should fetch cuts and pass correct props to VisualizationTable if session exists", async () => {
     typedMockGetServerSession.mockResolvedValueOnce(mockValidSession);
-    const searchParams = { page: "1", sortBy: "displayOrder" }; // Exemplo de searchParams
+    const searchParams = { page: "1", sortBy: "displayOrder" };
 
     const PageComponent = await VisualizationPage({ searchParams });
     render(PageComponent);
@@ -141,7 +132,7 @@ describe("VisualizationPage Server Component", () => {
   it("should pass default pagination and sort params if not in searchParams", async () => {
     typedMockGetServerSession.mockResolvedValueOnce(mockValidSession);
 
-    const PageComponent = await VisualizationPage({ searchParams: {} }); // Sem searchParams
+    const PageComponent = await VisualizationPage({ searchParams: {} });
     render(PageComponent);
 
     await waitFor(() => {

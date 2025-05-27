@@ -109,14 +109,64 @@ describe("DashboardPage Server Component", () => {
 
   it("should redirect to /login if no session is found", async () => {
     typedMockGetServerSession.mockResolvedValueOnce(null);
-    await DashboardPage({ searchParams: {} });
+    await DashboardPage({
+      searchParams: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        then: function <
+          TResult1 = {
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            cutType?: string;
+            material?: string;
+          },
+          TResult2 = never
+        >(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          onfulfilled?:
+            | ((value: {
+                page?: string;
+                limit?: string;
+                sortBy?: string;
+                cutType?: string;
+                material?: string;
+              }) => TResult1 | PromiseLike<TResult1>)
+            | null
+            | undefined
+        ): Promise<TResult1 | TResult2> {
+          throw new Error("Function not implemented.");
+        },
+        catch: function <TResult = never>(): Promise<
+          | {
+              page?: string;
+              limit?: string;
+              sortBy?: string;
+              cutType?: string;
+              material?: string;
+            }
+          | TResult
+        > {
+          throw new Error("Function not implemented.");
+        },
+        finally: function (): Promise<{
+          page?: string;
+          limit?: string;
+          sortBy?: string;
+          cutType?: string;
+          material?: string;
+        }> {
+          throw new Error("Function not implemented.");
+        },
+        [Symbol.toStringTag]: "",
+      },
+    });
     expect(typedMockGetServerSession).toHaveBeenCalled();
     expect(typedMockRedirect).toHaveBeenCalledWith("/login");
   });
 
   it("should fetch cuts and render CutsTable with correct props if session exists", async () => {
     typedMockGetServerSession.mockResolvedValueOnce(mockValidSession);
-    const searchParams = { page: "1", sortBy: "modelName" };
+    const searchParams = Promise.resolve({ page: "1", sortBy: "modelName" });
 
     const PageComponent = await DashboardPage({ searchParams });
     render(PageComponent);
@@ -152,7 +202,56 @@ describe("DashboardPage Server Component", () => {
       text: async () => "Erro da API",
     } as Response);
 
-    const PageComponent = await DashboardPage({ searchParams: {} });
+    const PageComponent = await DashboardPage({
+      searchParams: {
+        then: function <
+          TResult1 = {
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            cutType?: string;
+            material?: string;
+          },
+          TResult2 = never
+        >(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          onfulfilled?:
+            | ((value: {
+                page?: string;
+                limit?: string;
+                sortBy?: string;
+                cutType?: string;
+                material?: string;
+              }) => TResult1 | PromiseLike<TResult1>)
+            | null
+            | undefined
+        ): Promise<TResult1 | TResult2> {
+          throw new Error("Function not implemented.");
+        },
+        catch: function <TResult = never>(): Promise<
+          | {
+              page?: string;
+              limit?: string;
+              sortBy?: string;
+              cutType?: string;
+              material?: string;
+            }
+          | TResult
+        > {
+          throw new Error("Function not implemented.");
+        },
+        finally: function (): Promise<{
+          page?: string;
+          limit?: string;
+          sortBy?: string;
+          cutType?: string;
+          material?: string;
+        }> {
+          throw new Error("Function not implemented.");
+        },
+        [Symbol.toStringTag]: "",
+      },
+    });
     render(PageComponent);
 
     await waitFor(() => {

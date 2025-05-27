@@ -1,7 +1,6 @@
-// src/app/(main)/visualization/assembly/page.tsx
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -12,7 +11,8 @@ import { extractKeyFromImageUrl } from "@/utils/stringUtils";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface AssembledCut extends Cut {}
 
-export default function ImageAssemblyPage() {
+// Esse componente contém toda a lógica que usa o useSearchParams() e outros hooks client-side.
+function AssemblyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status: sessionStatus } = useSession();
@@ -56,7 +56,7 @@ export default function ImageAssemblyPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
       const fetchedCutsPromises: Promise<Cut>[] = idsArray.map((id) =>
         fetch(`${apiUrl}/cuts/${id}`, {
-          headers: { Authorization: `Bearer ${session.user.idToken}` },
+          headers: { Authorization: `Bearer ${session!.user.idToken}` },
         }).then(async (res) => {
           if (!res.ok) {
             let errorDetail = `Status: ${res.status}`;
@@ -185,10 +185,7 @@ export default function ImageAssemblyPage() {
         </h1>
       </div>
 
-      {/* Container Principal usando Flexbox */}
       <div className="flex flex-col lg:flex-row lg:items-start gap-4 sm:gap-6 lg:gap-8">
-        {/* Coluna Esquerda: Lista de Keys e Ordem */}
-        {/* No flex-row, definimos a largura para telas grandes */}
         <div className="lg:w-1/3 w-full bg-white p-4 sm:p-5 rounded-xl shadow-lg border border-gray-200">
           <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">
             ORDEM
@@ -225,8 +222,6 @@ export default function ImageAssemblyPage() {
           </div>
         </div>
 
-        {/* Coluna Direita: Imagem Montada */}
-        {/* No flex-row, definimos a largura para telas grandes */}
         <div className="lg:w-2/3 w-full bg-gray-50 p-3 sm:p-4 rounded-xl shadow-lg border border-gray-200 flex justify-center items-center min-h-[280px] sm:min-h-[320px] md:min-h-[380px] lg:min-h-0">
           <div className="relative w-full max-w-[90vw] h-auto sm:max-w-xs md:max-w-sm lg:max-w-[500px] aspect-[1/1]">
             {assembledCuts.map((cut, index) => (
@@ -238,9 +233,7 @@ export default function ImageAssemblyPage() {
                 }`}
                 fill
                 sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 500px"
-                style={{
-                  objectFit: "contain",
-                }}
+                style={{ objectFit: "contain" }}
                 className="absolute left-0 top-0"
                 priority={index < 2}
               />
@@ -249,5 +242,13 @@ export default function ImageAssemblyPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ImageAssemblyPage() {
+  return (
+    <Suspense fallback={<div>Carregando montagem...</div>}>
+      <AssemblyContent />
+    </Suspense>
   );
 }
