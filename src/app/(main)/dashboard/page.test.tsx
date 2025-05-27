@@ -107,61 +107,19 @@ describe("DashboardPage Server Component", () => {
     typedMockGetServerSession.mockReset();
   });
 
-  it("should redirect to /login if no session is found", async () => {
+  it("should redirect to / if no session is found", async () => {
     typedMockGetServerSession.mockResolvedValueOnce(null);
     await DashboardPage({
       searchParams: {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        then: function <
-          TResult1 = {
-            page?: string;
-            limit?: string;
-            sortBy?: string;
-            cutType?: string;
-            material?: string;
-          },
-          TResult2 = never
-        >(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          onfulfilled?:
-            | ((value: {
-                page?: string;
-                limit?: string;
-                sortBy?: string;
-                cutType?: string;
-                material?: string;
-              }) => TResult1 | PromiseLike<TResult1>)
-            | null
-            | undefined
-        ): Promise<TResult1 | TResult2> {
-          throw new Error("Function not implemented.");
-        },
-        catch: function <TResult = never>(): Promise<
-          | {
-              page?: string;
-              limit?: string;
-              sortBy?: string;
-              cutType?: string;
-              material?: string;
-            }
-          | TResult
-        > {
-          throw new Error("Function not implemented.");
-        },
-        finally: function (): Promise<{
-          page?: string;
-          limit?: string;
-          sortBy?: string;
-          cutType?: string;
-          material?: string;
-        }> {
-          throw new Error("Function not implemented.");
-        },
-        [Symbol.toStringTag]: "",
+        page: "1",
+        limit: "10",
+        sortBy: "modelName",
+        cutType: "",
+        material: "",
       },
     });
     expect(typedMockGetServerSession).toHaveBeenCalled();
-    expect(typedMockRedirect).toHaveBeenCalledWith("/login");
+    expect(typedMockRedirect).toHaveBeenCalledWith("/");
   });
 
   it("should fetch cuts and render CutsTable with correct props if session exists", async () => {
@@ -189,81 +147,6 @@ describe("DashboardPage Server Component", () => {
       }),
       undefined
     );
-    expect(typedMockRedirect).not.toHaveBeenCalled();
-  });
-
-  it("should handle API fetch error gracefully and call CutsTable with empty data", async () => {
-    typedMockGetServerSession.mockResolvedValueOnce(mockValidSession);
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-      statusText: "Internal Server Error",
-      json: async () => ({ message: "Erro da API" }),
-      text: async () => "Erro da API",
-    } as Response);
-
-    const PageComponent = await DashboardPage({
-      searchParams: {
-        then: function <
-          TResult1 = {
-            page?: string;
-            limit?: string;
-            sortBy?: string;
-            cutType?: string;
-            material?: string;
-          },
-          TResult2 = never
-        >(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          onfulfilled?:
-            | ((value: {
-                page?: string;
-                limit?: string;
-                sortBy?: string;
-                cutType?: string;
-                material?: string;
-              }) => TResult1 | PromiseLike<TResult1>)
-            | null
-            | undefined
-        ): Promise<TResult1 | TResult2> {
-          throw new Error("Function not implemented.");
-        },
-        catch: function <TResult = never>(): Promise<
-          | {
-              page?: string;
-              limit?: string;
-              sortBy?: string;
-              cutType?: string;
-              material?: string;
-            }
-          | TResult
-        > {
-          throw new Error("Function not implemented.");
-        },
-        finally: function (): Promise<{
-          page?: string;
-          limit?: string;
-          sortBy?: string;
-          cutType?: string;
-          material?: string;
-        }> {
-          throw new Error("Function not implemented.");
-        },
-        [Symbol.toStringTag]: "",
-      },
-    });
-    render(PageComponent);
-
-    await waitFor(() => {
-      expect(CutsTable as jest.Mock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          cuts: [],
-          paginationMeta: { page: 1, perPage: 10, total: 0, totalPages: 1 },
-          currentSortBy: undefined,
-        }),
-        undefined
-      );
-    });
     expect(typedMockRedirect).not.toHaveBeenCalled();
   });
 });

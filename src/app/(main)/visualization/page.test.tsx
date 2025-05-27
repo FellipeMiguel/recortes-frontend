@@ -90,11 +90,11 @@ describe("VisualizationPage Server Component", () => {
     typedMockGetServerSession.mockReset();
   });
 
-  it("should redirect to /login if no session is found", async () => {
+  it("should redirect to / if no session is found", async () => {
     typedMockGetServerSession.mockResolvedValueOnce(null);
     await VisualizationPage({ searchParams: {} });
     expect(typedMockGetServerSession).toHaveBeenCalled();
-    expect(typedMockRedirect).toHaveBeenCalledWith("/login");
+    expect(typedMockRedirect).toHaveBeenCalledWith("/");
   });
 
   it("should fetch cuts and pass correct props to VisualizationTable if session exists", async () => {

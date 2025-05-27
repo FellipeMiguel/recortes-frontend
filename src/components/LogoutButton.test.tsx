@@ -28,7 +28,7 @@ describe("LogoutButton Component", () => {
     fireEvent.click(buttonElement);
 
     expect(signOut).toHaveBeenCalledTimes(1);
-    expect(signOut).toHaveBeenCalledWith({ callbackUrl: "/login" });
+    expect(signOut).toHaveBeenCalledWith({ callbackUrl: "/" });
   });
 
   it("should have the expected style classes", () => {
