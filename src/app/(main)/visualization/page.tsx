@@ -64,16 +64,19 @@ async function fetchCutsForVisualization(
 }
 
 interface VisualizationPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     limit?: string;
     sortBy?: string;
-  };
+  }>;
 }
 
 export default async function VisualizationPage({
   searchParams,
 }: VisualizationPageProps) {
+  // Aguarda a resolução dos searchParams
+  const resolvedSearchParams = await searchParams;
+
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session || !session.user) {
@@ -83,9 +86,9 @@ export default async function VisualizationPage({
 
   const idToken = session.user.idToken;
 
-  const pageQuery = searchParams.page;
-  const limitQuery = searchParams.limit;
-  const sortByQuery = searchParams.sortBy;
+  const pageQuery = resolvedSearchParams.page;
+  const limitQuery = resolvedSearchParams.limit;
+  const sortByQuery = resolvedSearchParams.sortBy;
 
   const currentPage = pageQuery ? Number(pageQuery) : 1;
   const limit = limitQuery ? Number(limitQuery) : 10;

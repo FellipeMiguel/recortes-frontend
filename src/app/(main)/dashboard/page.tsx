@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { getServerSession, Session } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { CutsTable } from "@/components/CutsTable";
@@ -66,13 +66,28 @@ async function fetchCuts(
     return { data: [], meta: { ...defaultMeta, page: effectivePage } };
   }
 }
+interface DashboardPageProps {
+  searchParams: Promise<{
+    page?: string;
+    limit?: string;
+    sortBy?: string;
+    cutType?: string;
+    material?: string;
+  }>;
+}
 
 export default async function DashboardPage({
   searchParams,
-}: {
-  searchParams?: Record<string, string | string[] | undefined>;
-}) {
-  const session: Session | null = await getServerSession(authOptions);
+}: DashboardPageProps) {
+  const resolvedSearchParams = await searchParams; // aguarda a resolução da Promise
+
+  const pageQuery = resolvedSearchParams.page;
+  const limitQuery = resolvedSearchParams.limit;
+  const sortByQuery = resolvedSearchParams.sortBy;
+  const cutTypeFilter = resolvedSearchParams.cutType;
+  const materialFilter = resolvedSearchParams.material;
+
+  const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     redirect("/login");
@@ -80,12 +95,6 @@ export default async function DashboardPage({
   }
 
   const idToken = session.user.idToken;
-
-  const pageQuery = searchParams?.page;
-  const limitQuery = searchParams?.limit;
-  const sortByQuery = searchParams?.sortBy;
-  const cutTypeFilter = searchParams?.cutType;
-  const materialFilter = searchParams?.material;
 
   const currentPage =
     Number(Array.isArray(pageQuery) ? pageQuery[0] : pageQuery) || 1;
