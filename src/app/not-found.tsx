@@ -20,7 +20,7 @@ export default function NotFoundPage() {
 
       <div className="mt-10">
         <Link
-          href="/"
+          href="/dashboard"
           className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition-colors duration-150 ease-in-out"
         >
           Voltar para a Página Inicial
