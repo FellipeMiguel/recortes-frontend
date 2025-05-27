@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   return (
@@ -20,7 +23,10 @@ export default function Login() {
         </p>
       </div>
 
-      <button className="w-full max-w-xs sm:max-w-sm h-12 bg-[#070707] text-white rounded-lg text-sm sm:text-base transition-colors hover:bg-gray-800">
+      <button
+        onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+        className="w-full max-w-xs sm:max-w-sm h-12 bg-[#070707] text-white rounded-lg text-sm sm:text-base transition-colors hover:bg-gray-800"
+      >
         Entrar com Google
       </button>
     </main>
