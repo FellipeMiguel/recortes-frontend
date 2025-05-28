@@ -1,14 +1,13 @@
-// src/components/cuts/SpecificationsCard.tsx
 "use client";
 
 import { forwardRef } from "react";
 import { UseFormRegister, FieldErrors, FieldError } from "react-hook-form";
-import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page"; // Ajuste o caminho se necessário
+import { CreateCutForm } from "@/app/(main)/dashboard/cuts/new/page";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: FieldError;
-  name: string; // Alterado para string, pois register("body.modelName") passa "body.modelName"
+  name: string;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputProps>(
@@ -36,7 +35,7 @@ InputField.displayName = "InputField";
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   error?: FieldError;
-  name: string; // Alterado para string
+  name: string;
 }
 
 const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
@@ -76,7 +75,6 @@ export function SpecificationsCard({
     <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
       <h2 className="text-lg font-semibold mb-4">Especificações</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* O spread de register("body.modelName") passa name="body.modelName" */}
         <InputField
           label="Nome do modelo"
           error={errors.modelName}

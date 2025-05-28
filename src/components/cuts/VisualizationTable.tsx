@@ -6,8 +6,8 @@ import Image from "next/image";
 import { Cut, CutsApiResponseMeta } from "@/types";
 import Link from "next/link";
 import { extractKeyFromImageUrl } from "@/utils/stringUtils";
-import { FilterDropdown } from "../FilterDropdown"; // Ajuste o caminho se necessário
-import { StatusPill } from "@/components/ui/StatusPill"; // Ajuste o caminho se necessário
+import { FilterDropdown } from "../FilterDropdown";
+import { StatusPill } from "@/components/ui/StatusPill";
 
 interface VisualizationTableProps {
   cuts: Cut[];

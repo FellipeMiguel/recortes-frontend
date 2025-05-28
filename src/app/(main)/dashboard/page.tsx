@@ -79,7 +79,7 @@ interface DashboardPageProps {
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
-  const resolvedSearchParams = await searchParams; // aguarda a resolução da Promise
+  const resolvedSearchParams = await searchParams;
 
   const pageQuery = resolvedSearchParams.page;
   const limitQuery = resolvedSearchParams.limit;

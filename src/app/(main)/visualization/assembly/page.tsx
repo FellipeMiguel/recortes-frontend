@@ -11,7 +11,6 @@ import { extractKeyFromImageUrl } from "@/utils/stringUtils";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface AssembledCut extends Cut {}
 
-// Esse componente contém toda a lógica que usa o useSearchParams() e outros hooks client-side.
 function AssemblyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
